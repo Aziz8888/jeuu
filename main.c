@@ -1,87 +1,95 @@
 /**
 * @file main.c
 * @brief Testing Program.
-* @author twisted minds
-* @version 0.1
-* @date Apr 26, 2021
+* @author aziz salem	
+* @version alea sans fichier 
+* @date Apr 27, 2021
 *
-* Testing program for perso animation
+* Testing program
 *
 */
-#include <stdlib.h>
-#include <stdio.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
-#include <SDL/SDL_mixer.h>
-#include "perso.h"
-void  main(SDL_Surface *ecran)
-{
-    personagee pers;
+#include "enigme.h"
+#include <time.h>
 
-    SDL_Event event;
-    int continuer=1,i=0,t;
-    int k;
-       //score s;
+int main()
+{ 
 
-    SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO);
-    ecran=SDL_SetVideoMode(1000, 667, 32,SDL_HWSURFACE);
+	SDL_Surface *screen;
+	enigme  e;
+	int r=10,run =1,running=1,alea,cond=0;
+	int x;
+	char image[30]="";
+	SDL_Event event;
+    srand(time(NULL));
+ FILE *f ;  
+f=fopen("valeur","a") ;	 
+	 SDL_Init ( SDL_INIT_VIDEO ) ;
 
-  int recule=0;
-    image img,img1;
-    pers=init_perso();
-    pers=init_perso2();
-    img=init_img("background.jpg",0,0);
-    img1=init_img("vie.png",780,-50);
-//init_score( &s);
-  // afficherscore(&s,ecran  );
-    SDL_EnableKeyRepeat(10,10); 
-    
-    while (continuer)
-    {
-         SDL_PollEvent(&event);
-       switch(event.type)
-          {
-            case SDL_QUIT:
-            continuer= 0;
-            break;
-          }
-            i=deplacerperso(&pers,i,&continuer,&recule);
-            i=deplacerperso2(&pers,i,&continuer,&recule);
-           printf("%d\n",recule);
-            if (i==3)
-            {
-            i=0;
-            }
-             SDL_Delay(100);
-//afficherscore(&s,ecran  );
-             display(ecran,img);
-             display(ecran,img1);
-            afficher_perso(ecran,pers,i,pers.positionpersonage,recule);
-            afficher_perso2(ecran,pers,i,pers.positionpersonage,recule);
-         // afficherscore(&s,ecran  );
-            SDL_Flip(ecran);
-           if (pers.positionpersonage.x>800)
-            {
-            pers.positionpersonage.x=0; 
+
+   SDL_EnableUNICODE( SDL_ENABLE );
+	 screen=SDL_SetVideoMode(500,625,32,SDL_HWSURFACE  |  SDL_DOUBLEBUF );
+	 init_enigme(&e);
+	srand(time(NULL));
+	 while (run)
+	 {
+	    running=1 ;
+	     SDL_PollEvent(&event);
+							    if( event.type == SDL_QUIT)
+                 {
+              
+                run = 0;
+								 }
+								 
+			  
             
-            }
-         if (pers.positionpersonage.y<400)
-         pers.positionpersonage.y=350;
-SDL_Flip(ecran);
-  
-  }    
+generate_afficher ( screen  , image ,&e,&alea) ;
+solution_e1 (image,&x) ;
+
+if(cond!=1)
+{
+cond=1 ;	
+do {
+r=resolution1 (&running,&run ) ;
+}while(r<0 || r>4) ;
+} 
 
 
-   for(i=0;i<=3;i++)
-    SDL_FreeSurface(pers.personage[i]);
-     for(i=0;i<=3;i++)
-    SDL_FreeSurface(pers.personage1[i]);
+ fprintf(f,"1= %d \n r=%d\n alea: %d",x,r,alea) ;	 
+			
+			afficher_resultat (screen,r,&e,x) ;			
+      while(running){
 
+	
+			       SDL_WaitEvent(&event);
+                     switch(event.type)
+                       {
+					               case SDL_QUIT :
+                              running =0 ;
+						                  run=0 ;
+					                break ;
+                         case SDL_KEYDOWN :
+                             switch( event.key.keysym.sym )
+                                  {
+			                        case  SDLK_ESCAPE: 
+			                           running= 0 ;
+																generate_afficher ( screen  , image ,&e,&alea) ; 
+			cond=0 ;
+			
+			                        break ;
+			                      }
+						              break ;
+                       }
+                    }
+   } 
+	 fclose(f) ;
+      SDL_FreeSurface(e.img);
+      SDL_FreeSurface(screen);
+      
+      SDL_Quit();
+	return 0;
 }
-
-
-
-
-
-
-

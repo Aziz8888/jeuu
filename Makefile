@@ -1,11 +1,8 @@
-
-
-game:main.o perso.o
-	gcc main.o perso.o -o game  -lSDL -lSDL_image -lSDL_mixer -g 
-
+prog:main.o  enigme.o
+	gcc main.o   enigme.o -o prog -lSDL -lSDL_image -lSDL_ttf -lm
 main.o:main.c
-	gcc main.c -c  -lSDL -lSDL_image -lSDL_mixer -g
+	gcc -c main.c  -g
 
+enigme.o:enigme.c
+	gcc -c enigme.c  -g
 
-perso.o:perso.c
-	gcc perso.c -c -lSDL -lSDL_image -lSDL_mixer -g
